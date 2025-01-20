@@ -1,0 +1,10 @@
+databases:
+  postgresql_main:
+    type: postgres
+    host: 211.41.186.209
+    port: 5432
+    database: frost_prediction
+    user: test
+    password: nb1234
+
+  # 나중에 다른 데이터베이스 추가 가능
