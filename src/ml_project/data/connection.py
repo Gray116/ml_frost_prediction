@@ -1,5 +1,5 @@
 # 다양한 어노테이션을 위해 사용하는 모듈
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 from abc import ABC, abstractmethod # ABC: Abstract Base Class(추상 베이스 클래스)
 import pandas as pd
 from ..utils.logger import setup_logger
@@ -117,7 +117,7 @@ class PostgresConnector:
             self.logger.error(f"[ connection.py:read_query ] Error executing query: {e}")
             raise
         
-    def execute_query(self, query: str) -> None:
+    def execute_query(self, query: str, values: Optional[Tuple[Any, ...]] = None) -> None:
         """
         INSERT, UPDATE, DELETE 등의 쿼리 실행
         
@@ -127,7 +127,10 @@ class PostgresConnector:
         try:
             with self.connect_psycopg2() as conn:
                 with conn.cursor() as cur:
-                    cur.execute(query)
+                    if values:
+                        cur.execute(query, values)
+                    else:
+                        cur.execute(query)
                 conn.commit()
             self.logger.info("[ connection.py:execute_query ] Successfully executed query")
         except Exception as e:
