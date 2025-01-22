@@ -10,7 +10,7 @@ from io import StringIO
 from src.ml_project.data.connection import DBConnectorFactory
 from src.ml_project.utils.logger import setup_logger
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__, log_type='cron')
 
 class AWSWeatherFetcher:
     def __init__(self, api_key: str):

@@ -29,10 +29,10 @@ ml_project/
 │   ├── checkpoints/    # 체크포인트
 │   └── final/                # 최종 모델
 │
-├── configs/            # 설정 파일
-│   └── database.yaml
-│   ├── model.yaml      # 모델 설정
-│   └── train.yaml      # 학습 설정
+├── configs/                   # 설정 파일
+│   └── database.yaml   # DB 연결 설정
+│   ├── model.yaml        # 모델 설정
+│   └── train.yaml          # 학습 설정
 │
 ├── tests/              # 테스트 코드
 │   ├── test_data/     # 데이터 처리 테스트
@@ -40,15 +40,17 @@ ml_project/
 │   └── conftest.py    # pytest 설정
 │
 ├── logs/              # 로그 파일
-│   ├── tensorboard/  # TensorBoard 로그
-│   └── wandb/       # Weights & Biases 로그
+│   ├── app/           # 애플리케이션 로그
+│   │   ├── tensorboard/
+│   │   └── wandb/
+│   └── cron/          # 크론 작업 로그
 │
-├── scripts/           # 유틸리티 스크립트
-│   ├── generate_sample_data.py  # 샘플 데이터 생성
-│   └── test_db_connection.py    # DB 연결 테스트
+├── scripts/                                         # 유틸리티 스크립트
+│   ├── generate_sample_data.py     # 샘플 데이터 생성
+│   └── test_db_connection.py           # DB 연결 테스트
 │
-├── requirements.txt   # 프로젝트 의존성
-├── pyproject.toml    # 프로젝트 메타데이터
+├── requirements.txt    # 프로젝트 의존성
+├── pyproject.toml       # 프로젝트 메타데이터
 └── README.md
 ```
 
@@ -64,7 +66,21 @@ conda install pandas numpy scipy scikit-learn
 conda install pytorch torchvision torchaudio -c pytorch
 conda install jupyter notebook
 conda install python-dotenv
-conda install psycopg2 sqlalchemy pymysql  # DB 관련
+conda install psycopg2 sqlalchemy  # DB 관련
+conda install requests             # API 호출용
+
+# Deep Learning
+conda install pytorch torchvision torchaudio -c pytorch
+conda install tensorflow  # 앙상블 모델 중 일부에서 필요할 경우
+
+# ML/DL 유틸리티
+conda install scikit-learn  # 이미 설치됨
+conda install optuna  # 하이퍼파라미터 최적화
+conda install mlflow  # 실험 관리
+
+# 시각화
+conda install matplotlib seaborn  # 이미 설치됨
+conda install plotly  # 인터랙티브 시각화
 ```
 
 ## Usage
@@ -120,4 +136,5 @@ jupyter notebook
 
 ### scripts/
  - generate_sample_data.py: 테스트용 샘플 데이터 생성
- - test_db_connection.py: 데이터베이스 연결 테스트
+ - AWS 매분자료 수집 및 DB 저장
+ - 데이터베이스 연결 관리
