@@ -1,0 +1,17 @@
+ensemble:
+  # 사용할 모델과 각각의 설정
+  models:
+    rf: 'model/rf_config.yaml'
+    xgb: 'model/xgb_config.yaml'
+    lgbm: 'model/lgbm_config.yaml'
+  
+  # 앙상블 설정
+  weights: [0.4, 0.3, 0.3]  # 각 모델의 가중치
+  method: 'weighted_voting'  # 앙상블 방법
+  
+  # 예측 설정
+  probability_threshold: 0.5  # 확률 임계값 (필요시 조정 가능)
+
+  # 학습 설정
+  validation_split: 0.2
+  random_state: 42

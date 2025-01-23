@@ -8,7 +8,7 @@ from ..base_model import BaseModel
 class XGBoostModel(BaseModel):
     def __init__(self, config: Dict[str, Any]):
         """
-        XGBoost 모델 초기화
+        XGBoost 분류 모델 초기화
         
         Args:
             config: 모델 설정
@@ -20,13 +20,15 @@ class XGBoostModel(BaseModel):
                 - random_state: 랜덤 시드
         """
         super().__init__(config)
-        self.model = xgb.XGBRegressor(
+        self.model = xgb.XGBClassifier(  # Classifier로 변경
             n_estimators=config.get('n_estimators', 100),
             max_depth=config.get('max_depth', 6),
             learning_rate=config.get('learning_rate', 0.1),
             subsample=config.get('subsample', 0.8),
             colsample_bytree=config.get('colsample_bytree', 0.8),
-            random_state=config.get('random_state', 42)
+            random_state=config.get('random_state', 42),
+            use_label_encoder=False,  # 경고 메시지 방지
+            eval_metric='logloss'  # 분류를 위한 평가 지표
         )
         
     def train(self, X: pd.DataFrame, y: pd.Series) -> None:
@@ -74,14 +76,18 @@ class XGBoostModel(BaseModel):
             raise
 
     def _calculate_metrics(self, y_true: pd.Series, y_pred: np.ndarray) -> Dict[str, float]:
-        from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+        """
+        분류 평가 지표 계산
+        """
+        from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
         
         try:
             metrics = {
-                'mse': mean_squared_error(y_true, y_pred),
-                'rmse': np.sqrt(mean_squared_error(y_true, y_pred)),
-                'mae': mean_absolute_error(y_true, y_pred),
-                'r2': r2_score(y_true, y_pred)
+                'accuracy': accuracy_score(y_true, y_pred),
+                'precision': precision_score(y_true, y_pred),
+                'recall': recall_score(y_true, y_pred),
+                'f1': f1_score(y_true, y_pred),
+                'roc_auc': roc_auc_score(y_true, y_pred)
             }
             return metrics
         except Exception as e:

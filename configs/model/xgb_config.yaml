@@ -1,0 +1,11 @@
+xgboost:
+  n_estimators: 100
+  max_depth: 6
+  learning_rate: 0.1
+  subsample: 0.8
+  colsample_bytree: 0.8
+  random_state: 42
+  # 분류를 위한 추가 파라미터
+  objective: 'binary:logistic'  # 이진 분류
+  eval_metric: 'logloss'
+  use_label_encoder: false

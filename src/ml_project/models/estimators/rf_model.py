@@ -2,13 +2,13 @@ import pandas as pd
 import numpy as np
 from typing import Dict, Any
 import joblib
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
 from ..base_model import BaseModel
 
 class RandomForestModel(BaseModel):
     def __init__(self, config: Dict[str, Any]):
         """
-        Random Forest 모델 초기화
+        Random Forest 분류 모델 초기화
         
         Args:
             config: 모델 설정
@@ -19,7 +19,7 @@ class RandomForestModel(BaseModel):
                 - random_state: 랜덤 시드
         """
         super().__init__(config)
-        self.model = RandomForestRegressor(
+        self.model = RandomForestClassifier(
             n_estimators=config.get('n_estimators', 100),
             max_depth=config.get('max_depth', None),
             min_samples_split=config.get('min_samples_split', 2),
@@ -36,11 +36,11 @@ class RandomForestModel(BaseModel):
             y: 학습 타겟 데이터
         """
         try:
-            self.logger.info("Starting Random Forest training...")
+            self.logger.info("[ rf_model.py:train ] Starting Random Forest training...")
             self.model.fit(X, y)
-            self.logger.info("Random Forest training completed")
+            self.logger.info("[ rf_model.py:train ] Random Forest training completed")
         except Exception as e:
-            self.logger.error(f"Error during Random Forest training: {e}")
+            self.logger.error(f"[ rf_model.py:train ] Error during Random Forest training: {e}")
             raise
         
     def predict(self, X: pd.DataFrame) -> np.ndarray:
@@ -57,7 +57,7 @@ class RandomForestModel(BaseModel):
             predictions = self.model.predict(X)
             return predictions
         except Exception as e:
-            self.logger.error(f"Error during prediction: {e}")
+            self.logger.error(f"[ rf_model.py:predict ] Error during prediction: {e}")
             raise
         
     def save_model(self, path: str) -> None:
@@ -69,9 +69,9 @@ class RandomForestModel(BaseModel):
         """
         try:
             joblib.dump(self.model, path)
-            self.logger.info(f"Model saved to {path}")
+            self.logger.info(f"[ rf_model.py:save_model ] Model saved to {path}")
         except Exception as e:
-            self.logger.error(f"Error saving model: {e}")
+            self.logger.error(f"[ rf_model.py:save_model ] Error saving model: {e}")
             raise
         
     def load_model(self, path: str) -> None:
@@ -83,9 +83,9 @@ class RandomForestModel(BaseModel):
         """
         try:
             self.model = joblib.load(path)
-            self.logger.info(f"Model loaded from {path}")
+            self.logger.info(f"[ rf_model.py:load_model ] Model loaded from {path}")
         except Exception as e:
-            self.logger.error(f"Error loading model: {e}")
+            self.logger.error(f"[ rf_model.py:load_model ] Error loading model: {e}")
             raise
         
     def get_feature_importance(self) -> pd.Series:
@@ -102,28 +102,22 @@ class RandomForestModel(BaseModel):
             )
             return feature_importance.sort_values(ascending=False)
         except Exception as e:
-            self.logger.error(f"Error getting feature importance: {e}")
+            self.logger.error(f"[ rf_model.py:get_feature_importance ] Error getting feature importance: {e}")
             raise
         
     def _calculate_metrics(self, y_true: pd.Series, y_pred: np.ndarray) -> Dict[str, float]:
         """
-        평가 지표 계산
-        
-        Args:
-            y_true: 실제값
-            y_pred: 예측값
-            
-        Returns:
-            평가 지표 딕셔너리
+        분류 평가 지표 계산
         """
-        from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+        from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
         
         try:
             metrics = {
-                'mse': mean_squared_error(y_true, y_pred),
-                'rmse': np.sqrt(mean_squared_error(y_true, y_pred)),
-                'mae': mean_absolute_error(y_true, y_pred),
-                'r2': r2_score(y_true, y_pred)
+                'accuracy': accuracy_score(y_true, y_pred),
+                'precision': precision_score(y_true, y_pred),
+                'recall': recall_score(y_true, y_pred),
+                'f1': f1_score(y_true, y_pred),
+                'roc_auc': roc_auc_score(y_true, y_pred)
             }
             return metrics
         except Exception as e:

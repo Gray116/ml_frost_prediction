@@ -1,0 +1,12 @@
+lightgbm:
+  n_estimators: 100
+  max_depth: -1
+  learning_rate: 0.1
+  num_leaves: 31
+  subsample: 0.8
+  colsample_bytree: 0.8
+  random_state: 42
+  # 분류를 위한 추가 파라미터
+  objective: 'binary'
+  metric: 'binary_logloss'
+  is_unbalance: true  # 클래스 불균형 처리
